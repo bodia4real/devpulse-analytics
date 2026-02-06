@@ -62,3 +62,6 @@ docker-compose.override.yml
 tmp/
 temp/
 *.tmp
+
+# Implementation plans (keep local only)
+IMPLEMENTATION_PLAN*.md

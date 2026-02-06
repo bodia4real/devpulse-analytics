@@ -1,0 +1,26 @@
+{
+  "name": "devpulse-api",
+  "version": "1.0.0",
+  "description": "DevPulse Analytics Backend API",
+  "main": "src/server.ts",
+  "scripts": {
+    "test:db": "ts-node src/test-db-connection.ts",
+    "test:postgres": "ts-node src/test-postgres-connection.ts",
+    "dev": "ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.0",
+    "postgres": "^3.4.3",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
