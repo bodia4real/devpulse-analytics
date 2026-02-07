@@ -1,18 +1,14 @@
-import dotenv from 'dotenv';
+// Load environment variables from config
+import { supabaseConfig } from './config';
 import { createClient } from '@supabase/supabase-js';
-import path from 'path';
-
-// Load environment variables from backend/api/.env
-const envPath = path.resolve(process.cwd(), '.env');
-dotenv.config({ path: envPath });
 
 async function testDatabaseConnection() {
     console.log('🔍 Testing Supabase database connection...\n');
 
-    // Get environment variables
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    // Get environment variables from config
+    const supabaseUrl = supabaseConfig.url;
+    const supabaseAnonKey = supabaseConfig.anonKey;
+    const supabaseServiceKey = supabaseConfig.serviceRoleKey;
 
     // Validate environment variables
     if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {

@@ -6,7 +6,7 @@
   "scripts": {
     "test:db": "ts-node src/test-db-connection.ts",
     "test:postgres": "ts-node src/test-postgres-connection.ts",
-    "dev": "ts-node src/server.ts",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -23,6 +23,7 @@
     "@types/node": "^25.2.1",
     "@types/express": "^5.0.6",
     "@types/cors": "^2.8.17",
+    "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
