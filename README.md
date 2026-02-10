@@ -1,3 +1,3 @@
-# DevPulse Analytics
+# DevPulse
 
-Unified analytics platform for developers and creators.
+Project reset to minimal setup. Structure to be added.
