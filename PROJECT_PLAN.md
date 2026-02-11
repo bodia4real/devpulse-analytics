@@ -30,26 +30,25 @@
 ## Phase 2: Authentication (GitHub OAuth)
 
 ### GitHub OAuth Setup
-- [ ] Register GitHub OAuth App (get Client ID and Secret)
-- [ ] Set callback URL: http://localhost:5000/api/auth/github/callback
-- [ ] Store credentials in .env file
+- [x] Register GitHub OAuth App (get Client ID and Secret)
+- [x] Set callback URL: http://localhost:5001/api/auth/github/callback
+- [x] Store credentials in .env file
 
 ### Auth Implementation
-- [ ] Install jsonwebtoken and axios
-- [ ] Create auth routes file (src/routes/auth.routes.ts)
-- [ ] Implement GET /api/auth/github (redirect to GitHub OAuth)
-- [ ] Implement GET /api/auth/github/callback:
-  - [ ] Receive code from GitHub
-  - [ ] Exchange code for access token
-  - [ ] Fetch user data from GitHub API
-  - [ ] Store/update user in database
-  - [ ] Generate JWT token
-  - [ ] Return JWT to frontend
-- [ ] Create JWT generation utility (src/utils/jwt.ts)
-- [ ] Create auth middleware (src/middleware/auth.middleware.ts) to verify JWT
-- [ ] Implement GET /api/auth/me (protected endpoint to get current user)
+- [x] Install jsonwebtoken and axios
+- [x] Create auth routes file (src/routes/auth.router.ts)
+- [x] Implement GET /api/auth/github (redirect to GitHub OAuth)
+- [x] Implement GET /api/auth/github/callback:
+  - [x] Receive code from GitHub
+  - [x] Exchange code for access token
+  - [x] Fetch user data from GitHub API
+  - [x] Store/update user in database
+  - [x] Generate JWT token
+  - [x] Return JWT to frontend
+- [x] Create auth middleware (src/middleware/auth.middleware.ts) to verify JWT
+- [x] Implement GET /api/auth/me (protected endpoint to get current user)
 - [ ] Implement POST /api/auth/logout
-- [ ] Test full OAuth flow
+- [x] Test full OAuth flow
 
 ---
 
