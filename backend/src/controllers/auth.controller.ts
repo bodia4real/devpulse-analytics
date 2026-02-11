@@ -84,7 +84,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
   const token = jwt.sign(
     { userId: user.id },
     config.jwtSecret,
-    { expiresIn: '7d' }
+    { expiresIn: config.jwtExpiresIn } as jwt.SignOptions
   );
 
   res.redirect(`${config.frontendUrl}?token=${encodeURIComponent(token)}`);
@@ -109,4 +109,16 @@ export async function getMe(req: Request, res: Response): Promise<void> {
   }
 
   res.json({ user: rows[0] });
+}
+
+/**
+ * POST /api/auth/logout
+ * The server does NOT store or invalidate JWTs. This endpoint only returns success.
+ * The client must remove the token from its storage (localStorage, memory, etc.) after
+ * calling this; until then the token still works until it expires (see JWT_EXPIRES_IN).
+ */
+export async function logout(_req: Request, res: Response): Promise<void> {
+  res.status(200).json({
+    message: 'OK. Remove the token on the client (e.g. delete from localStorage).',
+  });
 }
