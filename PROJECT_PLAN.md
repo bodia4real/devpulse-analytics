@@ -47,7 +47,7 @@
   - [x] Return JWT to frontend
 - [x] Create auth middleware (src/middleware/auth.middleware.ts) to verify JWT
 - [x] Implement GET /api/auth/me (protected endpoint to get current user)
-- [ ] Implement POST /api/auth/logout
+- [x] Implement POST /api/auth/logout
 - [x] Test full OAuth flow
 
 ---
@@ -55,11 +55,11 @@
 ## Phase 3: GitHub API Integration - Repositories
 
 ### GitHub Service
-- [ ] Create GitHub API client (src/services/github.service.ts)
-- [ ] Implement fetchUserRepos(accessToken) - fetch all repos from GitHub
-- [ ] Implement fetchRepoDetails(owner, repo, accessToken) - get single repo
-- [ ] Handle GitHub API rate limiting
-- [ ] Add error handling for API failures
+- [x] Create GitHub API client (src/services/github.service.ts)
+- [x] Implement fetchUserRepos(accessToken) - fetch all repos from GitHub
+- [x] Implement fetchRepoDetails(owner, repo, accessToken) - get single repo
+- [x] Handle GitHub API rate limiting
+- [x] Add error handling for API failures
 
 ### Repo Endpoints
 - [ ] Create repos routes (src/routes/repos.routes.ts)
