@@ -62,16 +62,16 @@
 - [x] Add error handling for API failures
 
 ### Repo Endpoints
-- [ ] Create repos routes (src/routes/repos.routes.ts)
-- [ ] Implement GET /api/repos (fetch all user repos from DB, protected)
-- [ ] Implement GET /api/repos/:id (get specific repo details, protected)
-- [ ] Implement POST /api/repos/sync (sync repos from GitHub to DB, protected):
-  - [ ] Fetch repos from GitHub API
-  - [ ] Compare with existing DB records
-  - [ ] Insert new repos
-  - [ ] Update existing repos (stars, forks, issues, etc.)
-  - [ ] Return sync result
-- [ ] Test repo endpoints
+- [x] Create repos routes (src/routes/repos.routes.ts)
+- [x] Implement GET /api/repos (fetch all user repos from DB, protected)
+- [x] Implement GET /api/repos/:id (get specific repo details, protected)
+- [x] Implement POST /api/repos/sync (sync repos from GitHub to DB, protected):
+  - [x] Fetch repos from GitHub API
+  - [x] Compare with existing DB records
+  - [x] Insert new repos
+  - [x] Update existing repos (stars, forks, issues, etc.)
+  - [x] Return sync result
+- [x] Test repo endpoints
 
 ---
 

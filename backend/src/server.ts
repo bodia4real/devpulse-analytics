@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
 import authRouter from './routes/auth.router';
+import reposRouter from './routes/repos.routes';
 import { ctrlWrapper } from './utils/ctrlWrapper';
 import { healthCheck } from './utils/health';
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.get('/api/health', ctrlWrapper(healthCheck));
 app.use('/api/auth', authRouter);
+app.use('/api/repos', reposRouter);
 
 // Global error handler – must be last so it catches errors from all routes
 app.use(errorHandler);
