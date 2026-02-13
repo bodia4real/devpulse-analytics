@@ -77,11 +77,14 @@
 
 ## Phase 4: Contributions Tracking
 
-### Contributions Service
-- [ ] Research GitHub GraphQL API for contribution data
+### Contributions Service (REST API only)
+- [ ] Research GitHub REST API endpoints for contribution data:
+  - Commits: `GET /repos/{owner}/{repo}/commits?author={username}&since=&until=` (per repo; use user's repos from Phase 3)
+  - Pull requests: `GET /search/issues?q=author:{username}+type:pr+created:>=YYYY-MM-DD`
+  - Issues: `GET /search/issues?q=author:{username}+type:issue+created:>=YYYY-MM-DD`
 - [ ] Create contributions service (src/services/contributions.service.ts)
-- [ ] Implement fetchUserContributions(username, accessToken, days)
-- [ ] Parse and structure contribution data (commits, PRs, issues per day)
+- [ ] Implement fetchUserContributions(username, accessToken, days) using only REST endpoints
+- [ ] Parse and structure contribution data (commits, PRs, issues per day); handle rate limits and pagination
 
 ### Contributions Endpoints
 - [ ] Create contributions routes (src/routes/contributions.routes.ts)
