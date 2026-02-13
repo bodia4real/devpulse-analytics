@@ -2,10 +2,12 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
+import { requireAuth } from './middleware/auth.middleware';
 import authRouter from './routes/auth.router';
 import reposRouter from './routes/repos.routes';
 import { ctrlWrapper } from './utils/ctrlWrapper';
 import { healthCheck } from './utils/health';
+import * as contributionsController from './controllers/contributions.controller';
 
 dotenv.config();
 
@@ -29,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', ctrlWrapper(healthCheck));
 app.use('/api/auth', authRouter);
 app.use('/api/repos', reposRouter);
-
+app.get('/api/contributions', requireAuth, ctrlWrapper(contributionsController.getContributions));
 // Global error handler – must be last so it catches errors from all routes
 app.use(errorHandler);
 

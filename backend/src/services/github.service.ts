@@ -39,7 +39,11 @@ const handleGitHubRateLimit = async (
         throw new BadGatewayError('GitHub API rate limit exceeded. Try again later.');
     }
 
-    const msg = (response.data as { message?: string })?.message ?? 'GitHub API error';
+    const data = response.data as { message?: string; errors?: Array<{ message?: string; field?: string }> };
+    let msg = data?.message ?? 'GitHub API error';
+    if (Array.isArray(data?.errors) && data.errors.length > 0) {
+        msg += ' ' + data.errors.map((e: any) => e.message || e.field).join('; ');
+    }
     throw new BadGatewayError(msg);
 };
 
@@ -54,4 +58,4 @@ const fetchRepoDetails = async (owner: string, repo: string, accessToken: string
     return response.data;
 };
 
-export { fetchUserRepos, fetchRepoDetails };
+export { fetchUserRepos, fetchRepoDetails, handleGitHubRateLimit };

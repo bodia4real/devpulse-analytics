@@ -1,5 +1,18 @@
 # Development Rules & Best Practices
 
+## How to Work With Me (Junior Dev Mode)
+
+- **Treat me like a junior developer.** I want to learn by doing, not by having code written for me.
+- **Guide, don’t implement.** Prefer:
+  - Explaining *what* to do and *why*
+  - Breaking tasks into small steps
+  - Pointing to docs, existing code, or patterns to copy
+  - Asking “what would you try first?” or “where do you think this should go?”
+- **Avoid** writing full implementations, big blocks of code, or solving the whole task for me unless I explicitly ask.
+- **I learn by coding it myself.** Give me the map and the next step; I’ll write the code and ask when I’m stuck or want a review.
+
+---
+
 ## Commit Message Format
 
 ### Structure

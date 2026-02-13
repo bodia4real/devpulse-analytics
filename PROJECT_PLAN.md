@@ -14,7 +14,7 @@
 - [x] Get PostgreSQL connection string
 - [x] Create users table (id, github_id, username, email, avatar_url, access_token, timestamps)
 - [x] Create repos table (id, user_id, github_repo_id, name, full_name, description, language, stars, forks, open_issues, watchers, timestamps)
-- [x] Create contributions table (id, user_id, date, commit_count, pr_count, issue_count, timestamp)
+- [x] Create contributions table (id, user_id, date, commit_count, pr_count, issue_count, review_count, timestamp); if table already exists without review_count, add a DB migration to add the column
 - [x] Add indexes for performance
 - [x] Create database connection pool in src/config/database.ts
 - [x] Test database connection
@@ -78,13 +78,14 @@
 ## Phase 4: Contributions Tracking
 
 ### Contributions Service (REST API only)
-- [ ] Research GitHub REST API endpoints for contribution data:
+- [x] Research GitHub REST API endpoints for contribution data (4 types):
   - Commits: `GET /repos/{owner}/{repo}/commits?author={username}&since=&until=` (per repo; use user's repos from Phase 3)
   - Pull requests: `GET /search/issues?q=author:{username}+type:pr+created:>=YYYY-MM-DD`
   - Issues: `GET /search/issues?q=author:{username}+type:issue+created:>=YYYY-MM-DD`
-- [ ] Create contributions service (src/services/contributions.service.ts)
-- [ ] Implement fetchUserContributions(username, accessToken, days) using only REST endpoints
-- [ ] Parse and structure contribution data (commits, PRs, issues per day); handle rate limits and pagination
+  - Reviews: `GET /users/{username}/events` — filter events with `type === "PullRequestReviewEvent"`, use `created_at` for date (REST Events API; events are only last ~90 days). Alternative: Search `reviewed-by:{username}+type:pr`, then per PR use `GET /repos/{owner}/{repo}/pulls/{number}/reviews` to get review `submitted_at`.
+- [x] Create contributions service (src/services/contributions.service.ts)
+- [x] Implement fetchUserContributions(username, accessToken, days) using only REST endpoints
+- [x] Parse and structure contribution data (commits, PRs, issues, reviews per day); handle rate limits and pagination
 
 ### Contributions Endpoints
 - [ ] Create contributions routes (src/routes/contributions.routes.ts)
@@ -173,7 +174,7 @@
 ### Contribution Charts
 - [ ] Fetch contribution data (GET /api/contributions?days=30)
 - [ ] Create line chart: commits over time
-- [ ] Create bar chart: PRs and Issues per week
+- [ ] Create bar chart: PRs, Issues, and Reviews per week
 - [ ] Create area chart: total contributions trend
 - [ ] Add date range selector (7, 30, 90 days)
 
