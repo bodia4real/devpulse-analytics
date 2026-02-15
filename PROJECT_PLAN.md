@@ -88,13 +88,13 @@
 - [x] Parse and structure contribution data (commits, PRs, issues, reviews per day); handle rate limits and pagination
 
 ### Contributions Endpoints
-- [ ] Create contributions routes (src/routes/contributions.routes.ts)
-- [ ] Implement GET /api/contributions?days=30 (get last N days from DB, protected)
-- [ ] Implement POST /api/contributions/sync (sync from GitHub, protected):
-  - [ ] Fetch contribution data from GitHub
-  - [ ] Store daily stats in contributions table
-  - [ ] Handle duplicates (upsert)
-- [ ] Test contributions endpoints
+- [x] Create contributions routes (src/routes/contributions.routes.ts)
+- [x] Implement GET /api/contributions?days=30 (get last N days from DB, protected)
+- [x] Implement POST /api/contributions/sync (sync from GitHub, protected):
+  - [x] Fetch contribution data from GitHub
+  - [x] Store daily stats in contributions table
+  - [x] Handle duplicates (upsert)
+- [x] Test contributions endpoints
 
 ---
 
