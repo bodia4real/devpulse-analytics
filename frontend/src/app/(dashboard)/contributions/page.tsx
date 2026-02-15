@@ -10,7 +10,6 @@ import { DateRangeSelector } from "@/components/contributions/date-range-selecto
 import { ContributionSummary } from "@/components/contributions/contribution-summary";
 import { ContributionAreaChart } from "@/components/contributions/contribution-area-chart";
 import { ContributionBarChart } from "@/components/contributions/contribution-bar-chart";
-import { ContributionLineChart } from "@/components/contributions/contribution-line-chart";
 import { ProductivityInsights } from "@/components/contributions/productivity-insights";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GitCommitHorizontal } from "lucide-react";
@@ -53,10 +52,7 @@ export default function ContributionsPage() {
           ))}
         </div>
         <Skeleton className="h-72 rounded-xl" />
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Skeleton className="h-72 rounded-xl" />
-          <Skeleton className="h-72 rounded-xl" />
-        </div>
+        <Skeleton className="h-72 rounded-xl" />
       </div>
     );
   }
@@ -109,10 +105,7 @@ export default function ContributionsPage() {
 
           <ContributionAreaChart data={contribData} />
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <ContributionBarChart data={contribData} />
-            <ContributionLineChart data={contribData} />
-          </div>
+          <ContributionBarChart data={contribData} />
         </>
       )}
     </div>

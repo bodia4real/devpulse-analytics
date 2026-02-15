@@ -22,10 +22,7 @@ export default function ContributionsLoading() {
         ))}
       </div>
       <Skeleton className="h-72 rounded-xl" />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Skeleton className="h-72 rounded-xl" />
-        <Skeleton className="h-72 rounded-xl" />
-      </div>
+      <Skeleton className="h-72 rounded-xl" />
     </div>
   );
 }

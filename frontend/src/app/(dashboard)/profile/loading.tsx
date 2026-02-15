@@ -3,13 +3,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ProfileLoading() {
   return (
     <div className="space-y-6">
-      <div>
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="mt-1 h-4 w-48" />
+      <Skeleton className="h-64 rounded-2xl" />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Skeleton className="h-48 rounded-xl" />
+        <Skeleton className="h-48 rounded-xl" />
       </div>
-      <div className="mx-auto w-full max-w-[600px]">
-        <Skeleton className="h-[340px] rounded-2xl" />
-      </div>
+      <Skeleton className="h-80 rounded-xl" />
     </div>
   );
 }

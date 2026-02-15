@@ -50,12 +50,12 @@ export function ContributionAreaChart({
                 <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="0%"
-                    stopColor="hsl(var(--chart-1))"
+                    stopColor="#2563eb"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="100%"
-                    stopColor="hsl(var(--chart-1))"
+                    stopColor="#2563eb"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -80,18 +80,18 @@ export function ContributionAreaChart({
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   fontSize: "12px",
                 }}
-                labelStyle={{ color: "hsl(var(--foreground))" }}
-                itemStyle={{ color: "hsl(var(--muted-foreground))" }}
+                labelStyle={{ color: "var(--foreground)" }}
+                itemStyle={{ color: "var(--muted-foreground)" }}
               />
               <Area
                 type="monotone"
                 dataKey="total"
-                stroke="hsl(var(--chart-1))"
+                stroke="#2563eb"
                 strokeWidth={2}
                 fill="url(#areaGrad)"
                 name="Total"

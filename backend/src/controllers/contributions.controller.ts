@@ -16,7 +16,7 @@ export async function getContributions(req: Request, res: Response): Promise<voi
 
   const days = Math.min(90, Math.max(1, Number(req.query.days) || 30));
 
-  const { rows } = await pool.query<{ date: string; commit_count: number; pr_count: number; issue_count: number; review_count: number }>(
+  const { rows } = await pool.query<{ date: string | Date; commit_count: number; pr_count: number; issue_count: number; review_count: number }>(
     `SELECT date, commit_count, pr_count, issue_count, review_count
      FROM contributions
      WHERE user_id = $1 AND date >= (CURRENT_DATE - ($2)::integer)
@@ -24,7 +24,15 @@ export async function getContributions(req: Request, res: Response): Promise<voi
     [authReq.user.userId, days]
   );
 
-  res.json({ contributions: rows });
+  const contributions = rows.map((r) => ({
+    date: typeof r.date === "string" ? r.date.slice(0, 10) : (r.date as Date).toISOString().slice(0, 10),
+    commit_count: r.commit_count,
+    pr_count: r.pr_count,
+    issue_count: r.issue_count,
+    review_count: r.review_count,
+  }));
+
+  res.json({ contributions });
 }
 
 /**

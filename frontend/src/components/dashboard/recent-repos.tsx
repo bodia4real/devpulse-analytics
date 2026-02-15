@@ -1,10 +1,6 @@
-"use client";
-
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { formatRelativeDate, getLanguageColor, formatCompactNumber } from "@/lib/utils";
-import { ROUTES } from "@/lib/constants";
 import type { Repo } from "@/types/repo";
 
 interface RecentReposProps {
@@ -28,10 +24,9 @@ export function RecentRepos({ repos, className }: RecentReposProps) {
       <CardContent>
         <div className="space-y-3">
           {recent.map((repo) => (
-            <Link
+            <div
               key={repo.id}
-              href={ROUTES.repoDetail(repo.id)}
-              className="flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-accent/50"
+              className="flex items-center justify-between rounded-lg px-3 py-2"
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{repo.name}</p>
@@ -54,7 +49,7 @@ export function RecentRepos({ repos, className }: RecentReposProps) {
                 <Star className="h-3.5 w-3.5" />
                 {formatCompactNumber(repo.stars)}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </CardContent>

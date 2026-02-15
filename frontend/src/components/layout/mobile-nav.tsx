@@ -13,7 +13,6 @@ import {
   LayoutDashboard,
   FolderGit2,
   GitCommitHorizontal,
-  GitCompareArrows,
   UserCircle,
   Menu,
 } from "lucide-react";
@@ -25,11 +24,6 @@ const navItems = [
     label: "Contributions",
     href: ROUTES.contributions,
     icon: GitCommitHorizontal,
-  },
-  {
-    label: "Compare",
-    href: ROUTES.compare,
-    icon: GitCompareArrows,
   },
   {
     label: "Profile",

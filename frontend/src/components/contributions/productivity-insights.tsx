@@ -29,8 +29,9 @@ export function ProductivityInsights({ data }: ProductivityInsightsProps) {
         ? TrendingDown
         : Minus;
 
-  const velocityValue =
-    insights.velocityTrend.direction === "stable"
+  const velocityValue = insights.velocityTrend.insufficientData
+    ? "—"
+    : insights.velocityTrend.direction === "stable"
       ? "Stable"
       : `${insights.velocityTrend.percentChange > 0 ? "+" : ""}${insights.velocityTrend.percentChange}%`;
 

@@ -83,12 +83,12 @@ export function ContributionChart({ data, className }: ContributionChartProps) {
                 <linearGradient id="gradientTotal" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="0%"
-                    stopColor="hsl(var(--chart-1))"
+                    stopColor="#2563eb"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="100%"
-                    stopColor="hsl(var(--chart-1))"
+                    stopColor="#2563eb"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -113,12 +113,12 @@ export function ContributionChart({ data, className }: ContributionChartProps) {
               />
               <Tooltip
                 content={<CustomTooltip />}
-                cursor={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}
+                cursor={{ stroke: "var(--muted-foreground)", strokeWidth: 1 }}
               />
               <Area
                 type="monotone"
                 dataKey="total"
-                stroke="hsl(var(--chart-1))"
+                stroke="#2563eb"
                 strokeWidth={2}
                 fill="url(#gradientTotal)"
               />

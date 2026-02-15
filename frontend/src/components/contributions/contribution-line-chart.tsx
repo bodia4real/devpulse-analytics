@@ -69,12 +69,12 @@ export function ContributionLineChart({
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   fontSize: "12px",
                 }}
-                labelStyle={{ color: "hsl(var(--foreground))" }}
+                labelStyle={{ color: "var(--foreground)" }}
               />
               <Legend
                 wrapperStyle={{ fontSize: "12px" }}
@@ -84,7 +84,7 @@ export function ContributionLineChart({
               <Line
                 type="monotone"
                 dataKey="Commits"
-                stroke="hsl(var(--chart-1))"
+                stroke="#2563eb"
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4, strokeWidth: 0 }}
@@ -92,7 +92,7 @@ export function ContributionLineChart({
               <Line
                 type="monotone"
                 dataKey="PRs"
-                stroke="hsl(var(--chart-2))"
+                stroke="#16a34a"
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4, strokeWidth: 0 }}
@@ -100,7 +100,7 @@ export function ContributionLineChart({
               <Line
                 type="monotone"
                 dataKey="Issues"
-                stroke="hsl(var(--chart-3))"
+                stroke="#ea580c"
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4, strokeWidth: 0 }}
@@ -108,7 +108,7 @@ export function ContributionLineChart({
               <Line
                 type="monotone"
                 dataKey="Reviews"
-                stroke="hsl(var(--chart-4))"
+                stroke="#9333ea"
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4, strokeWidth: 0 }}

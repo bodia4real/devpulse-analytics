@@ -69,12 +69,12 @@ export function ContributionBarChart({
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   fontSize: "12px",
                 }}
-                labelStyle={{ color: "hsl(var(--foreground))" }}
+                labelStyle={{ color: "var(--foreground)" }}
               />
               <Legend
                 wrapperStyle={{ fontSize: "12px" }}
@@ -84,25 +84,25 @@ export function ContributionBarChart({
               <Bar
                 dataKey="Commits"
                 stackId="a"
-                fill="hsl(var(--chart-1))"
+                fill="#2563eb"
                 radius={[0, 0, 0, 0]}
               />
               <Bar
                 dataKey="PRs"
                 stackId="a"
-                fill="hsl(var(--chart-2))"
+                fill="#16a34a"
                 radius={[0, 0, 0, 0]}
               />
               <Bar
                 dataKey="Issues"
                 stackId="a"
-                fill="hsl(var(--chart-3))"
+                fill="#ea580c"
                 radius={[0, 0, 0, 0]}
               />
               <Bar
                 dataKey="Reviews"
                 stackId="a"
-                fill="hsl(var(--chart-4))"
+                fill="#9333ea"
                 radius={[2, 2, 0, 0]}
               />
             </BarChart>

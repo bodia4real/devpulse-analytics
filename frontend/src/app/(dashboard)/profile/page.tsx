@@ -4,9 +4,8 @@ import { useMemo } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRepos } from "@/hooks/use-repos";
 import { useContributions } from "@/hooks/use-contributions";
-import { PageHeader } from "@/components/shared/page-header";
 import { ErrorState } from "@/components/shared/error-state";
-import { DeveloperCard } from "@/components/profile/developer-card";
+import { DeveloperProfile } from "@/components/profile/developer-card";
 import { computeInsights } from "@/lib/contribution-insights";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -42,20 +41,19 @@ export default function ProfilePage() {
     });
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
+      .slice(0, 5)
       .map(([name, count]) => ({ name, count }));
   }, [repoData]);
 
   if (repos.isLoading || contributions.isLoading) {
     return (
       <div className="space-y-6">
-        <div>
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="mt-1 h-4 w-48" />
+        <Skeleton className="h-64 rounded-2xl" />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
         </div>
-        <div className="mx-auto w-full max-w-[600px]">
-          <Skeleton className="h-[340px] rounded-2xl" />
-        </div>
+        <Skeleton className="h-80 rounded-xl" />
       </div>
     );
   }
@@ -75,18 +73,12 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Profile"
-        description="Your developer card"
-      />
-      <DeveloperCard
-        user={user}
-        repos={repoData}
-        totalContributions={totalContributions}
-        currentStreak={insights?.currentStreak ?? 0}
-        topLanguages={topLanguages}
-      />
-    </div>
+    <DeveloperProfile
+      user={user}
+      repos={repoData}
+      totalContributions={totalContributions}
+      insights={insights}
+      topLanguages={topLanguages}
+    />
   );
 }

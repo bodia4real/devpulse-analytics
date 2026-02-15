@@ -6,9 +6,7 @@ export const ROUTES = {
   callback: "/callback",
   dashboard: "/dashboard",
   repos: "/repos",
-  repoDetail: (id: string) => `/repos/${id}`,
   contributions: "/contributions",
-  compare: "/compare",
   profile: "/profile",
 } as const;
 

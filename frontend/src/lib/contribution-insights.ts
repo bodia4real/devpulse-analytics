@@ -10,6 +10,7 @@ export interface ContributionInsights {
   velocityTrend: {
     percentChange: number;
     direction: "up" | "down" | "stable";
+    insufficientData?: boolean;
   };
   thisWeekTotal: number;
   lastWeekTotal: number;
@@ -34,7 +35,24 @@ const DAY_NAMES = [
 ];
 
 function totalForDay(d: ContributionDay): number {
-  return d.commit_count + d.pr_count + d.issue_count + d.review_count;
+  return (
+    Number(d.commit_count) +
+    Number(d.pr_count) +
+    Number(d.issue_count) +
+    Number(d.review_count)
+  );
+}
+
+/** Normalize date to YYYY-MM-DD (handles "2025-02-15" and "2025-02-15T00:00:00.000Z") */
+function toDateStr(val: string | Date): string {
+  if (typeof val === "string") return val.slice(0, 10);
+  return val.toISOString().slice(0, 10);
+}
+
+/** Today's date in local timezone as YYYY-MM-DD */
+function getTodayLocal(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function getWeekKey(dateStr: string): string {
@@ -89,8 +107,18 @@ export function computeInsights(data: ContributionDay[]): ContributionInsights {
     }
   }
 
-  // Current streak: count backwards from the last day
-  for (let i = sorted.length - 1; i >= 0; i--) {
+  // Current streak: count backwards from the last day with activity.
+  // If the most recent day is today and has 0 contributions, skip it
+  // (the day isn't over yet — don't break the streak).
+  const todayStr = getTodayLocal();
+  let streakStart = sorted.length - 1;
+  if (streakStart >= 0) {
+    const lastDate = toDateStr(sorted[streakStart].date);
+    if (lastDate === todayStr && totalForDay(sorted[streakStart]) === 0) {
+      streakStart--;
+    }
+  }
+  for (let i = streakStart; i >= 0; i--) {
     if (totalForDay(sorted[i]) > 0) {
       currentStreak++;
     } else {
@@ -128,21 +156,24 @@ export function computeInsights(data: ContributionDay[]): ContributionInsights {
     }
   });
 
-  // Velocity trend: last 7 days vs previous 7 days
+  // Velocity trend: last 7 days vs previous 7 days (need at least 14 days of data)
   const last7 = sorted.slice(-7);
   const prev7 = sorted.slice(-14, -7);
   const last7Total = last7.reduce((s, d) => s + totalForDay(d), 0);
   const prev7Total = prev7.reduce((s, d) => s + totalForDay(d), 0);
   let percentChange = 0;
   let direction: "up" | "down" | "stable" = "stable";
-  if (prev7Total > 0) {
-    percentChange = Math.round(
-      ((last7Total - prev7Total) / prev7Total) * 100
-    );
-    direction = percentChange > 0 ? "up" : percentChange < 0 ? "down" : "stable";
-  } else if (last7Total > 0) {
-    percentChange = 100;
-    direction = "up";
+  const velocityInsufficientData = sorted.length < 14;
+  if (!velocityInsufficientData) {
+    if (prev7Total > 0) {
+      percentChange = Math.round(
+        ((last7Total - prev7Total) / prev7Total) * 100
+      );
+      direction = percentChange > 0 ? "up" : percentChange < 0 ? "down" : "stable";
+    } else if (last7Total > 0) {
+      percentChange = 100;
+      direction = "up";
+    }
   }
 
   // This week / last week (calendar weeks, Mon–Sun)
@@ -199,7 +230,11 @@ export function computeInsights(data: ContributionDay[]): ContributionInsights {
     weeklyAverage,
     mostActiveWeek,
     mostActiveWeekTotal,
-    velocityTrend: { percentChange, direction },
+    velocityTrend: {
+      percentChange,
+      direction,
+      insufficientData: velocityInsufficientData,
+    },
     thisWeekTotal,
     lastWeekTotal,
     thisWeekChange,

@@ -31,8 +31,9 @@ export function ProductivitySummary({
         ? "text-red-500"
         : "text-muted-foreground";
 
-  const velocityLabel =
-    insights.velocityTrend.direction === "stable"
+  const velocityLabel = insights.velocityTrend.insufficientData
+    ? "—"
+    : insights.velocityTrend.direction === "stable"
       ? "Stable"
       : `${insights.velocityTrend.percentChange > 0 ? "+" : ""}${insights.velocityTrend.percentChange}%`;
 
