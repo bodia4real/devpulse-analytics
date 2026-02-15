@@ -9,10 +9,12 @@ import { BadGatewayError } from '../errors';
 const handleGitHubRateLimit = async (
     url: string,
     accessToken: string,
-    retriesLeft = 3
+    retriesLeft = 3,
+    extraHeaders?: Record<string, string>
 ): Promise<AxiosResponse> => {
+    const headers: Record<string, string> = { Authorization: `Bearer ${accessToken}`, ...extraHeaders };
     const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers,
         validateStatus: () => true,
     });
 
@@ -32,7 +34,7 @@ const handleGitHubRateLimit = async (
         }
         waitMs = Math.min(waitMs, 300_000);  // cap at 5 min
         await new Promise((r) => setTimeout(r, waitMs));
-        return handleGitHubRateLimit(url, accessToken, retriesLeft - 1);
+        return handleGitHubRateLimit(url, accessToken, retriesLeft - 1, extraHeaders);
     }
 
     if (response.status === 403 || response.status === 429) {

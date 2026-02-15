@@ -5,7 +5,8 @@ import { pool } from '../config/database';
 import { fetchUserContributions } from '../services/contributions.service';
 
 /**
- * GET /api/contributions?days=30 – sync from GitHub, then return contribution stats (always up to date).
+ * GET /api/contributions?days=30 – read contribution stats from DB (fast).
+ * Call POST /api/contributions/sync to refresh data from GitHub.
  */
 export async function getContributions(req: Request, res: Response): Promise<void> {
   const authReq = req as AuthenticatedRequest;
@@ -13,41 +14,23 @@ export async function getContributions(req: Request, res: Response): Promise<voi
     throw new UnauthorizedError();
   }
 
-  const userQuery = await pool.query<{ access_token: string; username: string }>(
-    'SELECT access_token, username FROM users WHERE id = $1',
-    [authReq.user.userId]
-  );
-
-  if (userQuery.rows.length === 0 || !userQuery.rows[0].access_token || !userQuery.rows[0].username?.trim()) {
-    throw new UnauthorizedError('No GitHub access token or username found');
-  }
-
   const days = Math.min(90, Math.max(1, Number(req.query.days) || 30));
-  const contributions = await fetchUserContributions(
-    userQuery.rows[0].username,
-    userQuery.rows[0].access_token,
-    days
+
+  const { rows } = await pool.query<{ date: string | Date; commit_count: number; pr_count: number; issue_count: number; review_count: number }>(
+    `SELECT date, commit_count, pr_count, issue_count, review_count
+     FROM contributions
+     WHERE user_id = $1 AND date >= (CURRENT_DATE - ($2)::integer)
+     ORDER BY date`,
+    [authReq.user.userId, days]
   );
 
-  for (const day of contributions) {
-    await pool.query(
-      `INSERT INTO contributions (user_id, date, commit_count, pr_count, issue_count, review_count)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       ON CONFLICT (user_id, date) DO UPDATE SET
-         commit_count = EXCLUDED.commit_count,
-         pr_count = EXCLUDED.pr_count,
-         issue_count = EXCLUDED.issue_count,
-         review_count = EXCLUDED.review_count`,
-      [
-        authReq.user.userId,
-        day.date,
-        day.commit_count,
-        day.pr_count,
-        day.issue_count,
-        day.review_count,
-      ]
-    );
-  }
+  const contributions = rows.map((r) => ({
+    date: typeof r.date === "string" ? r.date.slice(0, 10) : (r.date as Date).toISOString().slice(0, 10),
+    commit_count: r.commit_count,
+    pr_count: r.pr_count,
+    issue_count: r.issue_count,
+    review_count: r.review_count,
+  }));
 
   res.json({ contributions });
 }
