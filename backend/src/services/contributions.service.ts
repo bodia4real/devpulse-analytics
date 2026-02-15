@@ -63,27 +63,37 @@ export const fetchUserContributions = async (username: string, accessToken: stri
         reviewCountByDate[dateOnly] = (reviewCountByDate[dateOnly] ?? 0) + 1;
     }
 
-   // Commits (per repo, then paginate each)
+   // Commits (per repo, in parallel batches to reduce total time)
    const repos = await fetchUserRepos(accessToken);
+   const validRepos = repos.filter((r: any) => r.owner?.login && r.name);
+   const BATCH_SIZE = 5;
+   const DELAY_MS = 80;
    let allCommits: any[] = [];
 
-   for (const repo of repos) {
-       const owner = repo.owner?.login;
-       const repoName = repo.name;
-       if (!owner || !repoName) continue;
-
-       let page = 1;
-       while (true) {
-           const commitsUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}/commits?author=${encodeURIComponent(username)}&since=${encodeURIComponent(since)}&until=${encodeURIComponent(until)}&per_page=${perPage}&page=${page}`;
-           const commitsResponse = await handleGitHubRateLimit(commitsUrl, accessToken);
-           const commits: any[] = Array.isArray(commitsResponse.data) ? commitsResponse.data : [];
-           if (commits.length === 0) break;
-
-           allCommits = [...allCommits, ...commits];
-           if (commits.length < perPage) break;
-           page++;
+   for (let i = 0; i < validRepos.length; i += BATCH_SIZE) {
+       const batch = validRepos.slice(i, i + BATCH_SIZE);
+       const batchResults = await Promise.all(
+           batch.map(async (repo: any) => {
+               const owner = repo.owner.login;
+               const repoName = repo.name;
+               let commits: any[] = [];
+               let page = 1;
+               while (true) {
+                   const commitsUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}/commits?author=${encodeURIComponent(username)}&since=${encodeURIComponent(since)}&until=${encodeURIComponent(until)}&per_page=${perPage}&page=${page}`;
+                   const commitsResponse = await handleGitHubRateLimit(commitsUrl, accessToken);
+                   const items: any[] = Array.isArray(commitsResponse.data) ? commitsResponse.data : [];
+                   if (items.length === 0) break;
+                   commits = [...commits, ...items];
+                   if (items.length < perPage) break;
+                   page++;
+               }
+               return commits;
+           })
+       );
+       for (const c of batchResults) allCommits = [...allCommits, ...c];
+       if (i + BATCH_SIZE < validRepos.length) {
+           await new Promise((r) => setTimeout(r, DELAY_MS));
        }
-       await new Promise((r) => setTimeout(r, 200)); // small delay between repos to avoid rate limits
    }
 
    const commitCountByDate: Record<string, number> = {};
