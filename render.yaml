@@ -1,0 +1,32 @@
+# Render Blueprint - free tier
+# Place at repo root. Connect repo at render.com
+services:
+  - type: web
+    name: devpulse-backend
+    runtime: node
+    region: oregon
+    plan: free
+
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CALLBACK_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

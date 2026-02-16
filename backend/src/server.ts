@@ -22,8 +22,9 @@ process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
 
-// Middleware
-app.use(cors());
+// Middleware (allow FRONTEND_URL in prod, all origins in dev)
+const corsOrigin = process.env.FRONTEND_URL || true;
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
