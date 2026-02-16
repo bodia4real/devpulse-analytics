@@ -10,7 +10,9 @@ export const config = {
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      callbackUrl: process.env.GITHUB_CALLBACK_URL!,
+      callbackUrl:
+        process.env.GITHUB_CALLBACK_URL ||
+        'https://devpulse-backend-production.up.railway.app/api/auth/github/callback',
     },
     frontendUrl: process.env.FRONTEND_URL!,
   };
