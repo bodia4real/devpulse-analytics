@@ -16,6 +16,18 @@ export function useRepos() {
   });
 }
 
+export function useRepo(id: string | undefined) {
+  return useQuery<Repo>({
+    queryKey: ["repos", id],
+    queryFn: async () => {
+      const { data } = await apiClient.get<{ repo: Repo }>(`/repos/${id}`);
+      return data.repo;
+    },
+    enabled: !!id,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
 export function useSyncRepos() {
   const queryClient = useQueryClient();
   return useMutation<SyncResult>({
