@@ -9,7 +9,6 @@ import { SyncButton } from "@/components/dashboard/sync-button";
 import { DateRangeSelector } from "@/components/contributions/date-range-selector";
 import { ContributionSummary } from "@/components/contributions/contribution-summary";
 import { ContributionAreaChart } from "@/components/contributions/contribution-area-chart";
-import { ContributionBarChart } from "@/components/contributions/contribution-bar-chart";
 import { ProductivityInsights } from "@/components/contributions/productivity-insights";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GitCommitHorizontal } from "lucide-react";
@@ -51,7 +50,6 @@ export default function ContributionsPage() {
             <Skeleton key={`insight-${i}`} className="h-28 rounded-xl" />
           ))}
         </div>
-        <Skeleton className="h-72 rounded-xl" />
         <Skeleton className="h-72 rounded-xl" />
       </div>
     );
@@ -104,8 +102,6 @@ export default function ContributionsPage() {
           <ProductivityInsights data={contribData} />
 
           <ContributionAreaChart data={contribData} />
-
-          <ContributionBarChart data={contribData} />
         </>
       )}
     </div>
