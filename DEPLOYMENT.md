@@ -6,45 +6,30 @@ Deploy backend on **Railway** (or Render) and frontend on **Vercel**.
 
 ## 1. Deploy Backend (Railway)
 
-### 1.1 Create Railway account
-- Go to [railway.app](https://railway.app) and sign up (GitHub recommended)
-- New users get a **$5 free trial**; after that, **$1/month free credit**
+**📖 For detailed step-by-step instructions, see [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)**
 
-### 1.2 New Project
-- **New Project** → **Deploy from GitHub repo**
-- Select your `devpulse-analytics` repo
-- Railway will create a service. Configure it:
+### Quick Summary:
 
-### 1.3 Service Settings
-- Click the service → **Settings**
-- **Root Directory:** `backend`
-- **Build Command:** `npm install && npm run build` (or leave empty; `backend/railway.json` defines it)
-- **Start Command:** `npm start` (or leave empty; `railway.json` defines it)
-- **Watch Paths:** `backend/**` (optional; only redeploy when backend changes)
-
-### 1.4 Environment Variables
-In Railway → your service → **Variables**:
-
-| Key | Value |
-|-----|-------|
-| `NODE_ENV` | `production` |
-| `DATABASE_URL` | Your Supabase connection string |
-| `JWT_SECRET` | Random string (e.g. `openssl rand -hex 32`) |
-| `JWT_EXPIRES_IN` | `7d` |
-| `GITHUB_CLIENT_ID` | From GitHub OAuth App |
-| `GITHUB_CLIENT_SECRET` | From GitHub OAuth App |
-| `GITHUB_CALLBACK_URL` | `https://YOUR-RAILWAY-URL.up.railway.app/api/auth/github/callback` |
-| `FRONTEND_URL` | `https://YOUR-VERCEL-URL.vercel.app` (set after frontend deploy) |
-
-### 1.5 Generate Domain
-- **Settings** → **Networking** → **Generate Domain**
-- Your backend URL: `https://devpulse-backend-production-xxxx.up.railway.app` (or similar)
-
-### 1.6 Update GitHub OAuth
-- GitHub → Settings → Developer settings → OAuth Apps → your app
-- Add **Authorization callback URL:** `https://YOUR-RAILWAY-URL.up.railway.app/api/auth/github/callback`
+1. **Create Railway account** → [railway.app](https://railway.app)
+2. **New Project** → Deploy from GitHub repo → Select `devpulse-analytics`
+3. **Configure Service:**
+   - **Root Directory:** `backend` ⚠️ **CRITICAL - Most common mistake!**
+   - **Build Command:** `npm install && npm run build` (or leave empty - `railway.json` handles it)
+   - **Start Command:** `npm start` (or leave empty)
+4. **Add Environment Variables** (Variables tab):
+   - `NODE_ENV=production`
+   - `DATABASE_URL` (from Supabase)
+   - `JWT_SECRET` (generate: `openssl rand -hex 32`)
+   - `JWT_EXPIRES_IN=7d`
+   - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET`
+   - `GITHUB_CALLBACK_URL` (set after getting Railway domain)
+   - `FRONTEND_URL` (set after Vercel deploy)
+5. **Generate Domain** → Settings → Networking → Generate Domain
+6. **Update GitHub OAuth** callback URL
 
 **Note:** Railway does not spin down like Render; your backend stays warm. No cold starts.
+
+**Having issues?** Check [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) for detailed troubleshooting.
 
 ---
 
