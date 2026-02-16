@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import type { Repo } from "@/types/repo";
-import type { ReposResponse, SyncResult } from "@/types/api";
+import type { ReposResponse, RepoResponse, SyncResult } from "@/types/api";
 
 export function useRepos() {
   return useQuery<Repo[]>({
@@ -20,7 +20,7 @@ export function useRepo(id: string | undefined) {
   return useQuery<Repo>({
     queryKey: ["repos", id],
     queryFn: async () => {
-      const { data } = await apiClient.get<{ repo: Repo }>(`/repos/${id}`);
+      const { data } = await apiClient.get<RepoResponse>(`/repos/${id}`);
       return data.repo;
     },
     enabled: !!id,
