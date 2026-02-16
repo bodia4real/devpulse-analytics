@@ -1,5 +1,9 @@
 # DevPulse – Project Plan
 
+> **Status:** Core app complete. Backend + Next.js frontend with auth, dashboard, repos, contributions, profile. Ready for deployment and polish.
+
+---
+
 ## Phase 1: Backend Setup & Database
 
 ### Project Initialization
@@ -79,13 +83,14 @@
 
 ### Contributions Service (REST API only)
 - [x] Research GitHub REST API endpoints for contribution data (4 types):
-  - Commits: `GET /repos/{owner}/{repo}/commits?author={username}&since=&until=` (per repo; use user's repos from Phase 3)
-  - Pull requests: `GET /search/issues?q=author:{username}+type:pr+created:>=YYYY-MM-DD`
-  - Issues: `GET /search/issues?q=author:{username}+type:issue+created:>=YYYY-MM-DD`
-  - Reviews: `GET /users/{username}/events` — filter events with `type === "PullRequestReviewEvent"`, use `created_at` for date (REST Events API; events are only last ~90 days). Alternative: Search `reviewed-by:{username}+type:pr`, then per PR use `GET /repos/{owner}/{repo}/pulls/{number}/reviews` to get review `submitted_at`.
+  - Commits: Search API `author:username committer-date:>=YYYY-MM-DD` (all repos); fallback to per-repo
+  - Pull requests: `GET /search/issues?q=author:{username} type:pr created:>=YYYY-MM-DD`
+  - Issues: `GET /search/issues?q=author:{username} type:issue created:>=YYYY-MM-DD`
+  - Reviews: `GET /users/{username}/events` — filter `PullRequestReviewEvent`
 - [x] Create contributions service (src/services/contributions.service.ts)
-- [x] Implement fetchUserContributions(username, accessToken, days) using only REST endpoints
+- [x] Implement fetchUserContributions(username, accessToken, days) using REST endpoints
 - [x] Parse and structure contribution data (commits, PRs, issues, reviews per day); handle rate limits and pagination
+- [x] Parallel batch commits (5 at a time) for faster sync
 
 ### Contributions Endpoints
 - [x] Create contributions routes (src/routes/contributions.routes.ts)
@@ -113,127 +118,128 @@
 
 ## Phase 6: Frontend Setup
 
-### React Project Initialization
-- [ ] Create React app with TypeScript (create-react-app or Vite)
-- [ ] Install dependencies: axios, react-router-dom
-- [ ] Set up project structure (components, hooks, services, types, utils)
-- [ ] Configure environment variables (API base URL)
+### Next.js Project Initialization
+- [x] Create Next.js app with TypeScript (App Router)
+- [x] Install dependencies: axios, @tanstack/react-query, recharts, shadcn/ui, tailwind
+- [x] Set up project structure (components, hooks, lib, types, providers)
+- [x] Configure environment variables (API base URL)
 
 ### Routing & Layout
-- [ ] Set up React Router
-- [ ] Create main Layout component (header, navigation, footer)
-- [ ] Create route structure (/, /dashboard, /repos, /repos/:id, /compare)
-- [ ] Implement protected route wrapper
+- [x] Set up Next.js App Router
+- [x] Create main Layout (sidebar, topbar, mobile nav)
+- [x] Create route structure (/, /dashboard, /repos, /contributions, /profile)
+- [x] Implement protected route wrapper
 
 ### Authentication Flow
-- [ ] Create auth service (src/services/auth.service.ts) with axios instance
-- [ ] Implement token storage (localStorage)
-- [ ] Create axios interceptor to attach JWT to requests
-- [ ] Create AuthContext/hook for managing auth state
-- [ ] Build landing page with "Login with GitHub" button
-- [ ] Handle OAuth callback (extract JWT from URL, store it, redirect)
-- [ ] Build logout functionality
-- [ ] Test login/logout flow
+- [x] Create API client with axios instance
+- [x] Implement token storage (localStorage)
+- [x] Create axios interceptor to attach JWT to requests
+- [x] Create AuthProvider for auth state
+- [x] Build landing page with "Login with GitHub" button
+- [x] Handle OAuth callback (extract JWT from URL, store it, redirect)
+- [x] Build logout functionality
+- [x] Test login/logout flow
 
 ---
 
 ## Phase 7: Core Frontend Features
 
 ### Dashboard
-- [ ] Create Dashboard page component
-- [ ] Fetch user data (GET /api/auth/me)
-- [ ] Display user info (avatar, username, email)
-- [ ] Add "Sync Repos" button
-- [ ] Show loading states
-- [ ] Handle errors
+- [x] Create Dashboard page component
+- [x] Fetch user data (GET /api/auth/me)
+- [x] Display user info (avatar, username)
+- [x] Add "Sync Repos" and "Sync Contributions" buttons
+- [x] Show loading states (skeleton loaders)
+- [x] Handle errors and empty states
 
 ### Repo List View
-- [ ] Create RepoList component
-- [ ] Fetch repos from API (GET /api/repos)
-- [ ] Display repos in a grid/list: Name, description; Stars, forks, issues; Language badge; Last updated
-- [ ] Add sorting (by stars, forks, updated date)
-- [ ] Add filtering by language
-- [ ] Implement search functionality
-- [ ] Add pagination if needed
+- [x] Create RepoList / RepoGrid component
+- [x] Fetch repos from API (GET /api/repos)
+- [x] Display repos in a grid: Name, description; Stars, forks, issues; Language badge
+- [x] Add sorting and filtering by language
+- [x] Implement search functionality
+- [ ] Add pagination if needed (optional for large repo counts)
 
 ### Repo Detail View
-- [ ] Create RepoDetail component
-- [ ] Fetch single repo (GET /api/repos/:id)
-- [ ] Display detailed stats
-- [ ] Show repo description, README preview (optional)
-- [ ] Link to GitHub repo
+- [ ] Create RepoDetail page (GET /api/repos/:id) — optional enhancement
+
+### Profile & Shareable Card
+- [x] Create Profile page with developer stats
+- [x] Shareable card: repos, stars, forks, contributions, streak, best streak
+- [x] Top languages and activity highlights
+- [x] Export as PNG (canvas-based, no overlap)
 
 ---
 
 ## Phase 8: Data Visualization
 
 ### Charts Library Setup
-- [ ] Install recharts (or chart.js)
-- [ ] Create reusable Chart components
+- [x] Install recharts
+- [x] Create reusable Chart components
 
 ### Contribution Charts
-- [ ] Fetch contribution data (GET /api/contributions?days=30)
-- [ ] Create line chart: commits over time
-- [ ] Create bar chart: PRs, Issues, and Reviews per week
-- [ ] Create area chart: total contributions trend
-- [ ] Add date range selector (7, 30, 90 days)
+- [x] Fetch contribution data (GET /api/contributions?days=30)
+- [x] Create line chart: commits over time
+- [x] Create bar chart: PRs, Issues, and Reviews
+- [x] Create area chart: total contributions trend
+- [x] Add date range selector (7, 30, 90 days)
+- [x] Productivity insights (streak, velocity, best day, weekly avg)
 
 ### Repository Analytics
-- [ ] Create language distribution pie chart
-- [ ] Create stars growth chart (if tracking history)
-- [ ] Display top repositories by stars/forks
+- [x] Create language distribution chart (top languages)
+- [x] Display recent repos and stats
+- [ ] Stars growth chart (if tracking history) — optional
 
 ---
 
-## Phase 9: Repo Comparison Feature
+## Phase 9: Repo Comparison Feature (Optional)
 
 ### Comparison UI
-- [ ] Create Compare page component
-- [ ] Add repo selection interface (multi-select from user's repos)
-- [ ] Fetch comparison data (GET /api/repos/compare?ids=1,2,3)
-- [ ] Display side-by-side comparison table: Stars, forks, issues; Language; Created/updated dates
-- [ ] Create comparison charts (bar chart comparing metrics)
-- [ ] Add ability to share comparison (optional)
+- [ ] Create Compare page (requires backend GET /api/repos/compare)
+- [ ] Add repo multi-select from user's repos
+- [ ] Display side-by-side comparison table
+- [ ] Create comparison charts
 
 ---
 
 ## Phase 10: UI/UX Polish
 
 ### Design & Responsiveness
-- [ ] Apply consistent color scheme and typography
-- [ ] Make responsive for mobile, tablet, desktop
-- [ ] Add loading spinners for async operations
-- [ ] Implement skeleton loaders for better UX
-- [ ] Add error messages and empty states
-- [ ] Improve button and form styles
+- [x] Apply consistent color scheme (slate/indigo, dark mode support)
+- [x] Make responsive for mobile, tablet, desktop (sidebar, mobile nav)
+- [x] Add loading spinners for async operations
+- [x] Implement skeleton loaders for better UX
+- [x] Add error messages and empty states
+- [x] shadcn/ui components for consistent styling
 
 ### User Experience
-- [ ] Add toast notifications for success/error messages
-- [ ] Implement smooth transitions and animations
+- [x] Add toast notifications (sonner) for success/error
+- [x] Theme toggle (light/dark)
+- [x] Shareable profile card with Export as PNG
 - [ ] Add keyboard shortcuts (optional)
-- [ ] Ensure accessibility (ARIA labels, keyboard navigation)
+- [ ] Ensure accessibility (ARIA labels, keyboard nav) — review
 
 ---
 
 ## Phase 11: Testing & Bug Fixes
 
 ### Backend Testing
-- [ ] Test all API endpoints manually (Postman/Insomnia)
-- [ ] Verify error handling
-- [ ] Check rate limiting behavior
-- [ ] Test edge cases (no repos, new user, etc.)
+- [x] Test all API endpoints manually (Postman)
+- [x] Verify error handling
+- [x] Check rate limiting behavior
+- [ ] Test edge cases (no repos, new user, etc.) — ongoing
 
 ### Frontend Testing
-- [ ] Test all user flows end-to-end
+- [x] Test auth flow, dashboard, repos, contributions, profile
 - [ ] Test on different browsers
-- [ ] Test responsive design on different devices
-- [ ] Fix any bugs found
+- [x] Test responsive design
+- [x] Fix streak, velocity, export PNG overlap bugs
 
 ### Security Review
-- [ ] Ensure JWTs are properly validated
-- [ ] Check for SQL injection vulnerabilities
-- [ ] Verify environment variables are not exposed
-- [ ] Review CORS configuration
+- [x] JWTs validated via auth middleware
+- [x] Parameterized queries (no raw SQL concatenation)
+- [ ] Verify env vars not exposed in client bundle — review
+- [x] CORS configured
 
 ---
 
@@ -305,3 +311,17 @@
 - [ ] Write project description for LinkedIn
 - [ ] Prepare GitHub repo (ensure it's public and organized)
 - [ ] Add project to portfolio website (if applicable)
+
+---
+
+## Suggested Improvements (Post-MVP)
+
+### Quick wins
+- [ ] Add repo detail page (GET /api/repos/:id) — link from repo cards
+- [ ] Add "Most Active Week" to export card
+- [ ] Improve accessibility (focus states, ARIA labels)
+
+### Nice to have
+- [ ] Repo comparison (Phase 5 backend + Phase 9 UI)
+- [ ] Stats overview endpoint (GET /api/stats/overview)
+- [ ] Background sync on login (optional, to pre-populate contributions)
