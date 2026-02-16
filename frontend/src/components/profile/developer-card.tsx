@@ -165,7 +165,7 @@ async function exportCard(props: {
   ctx.lineTo(W - LX, 148);
   ctx.stroke();
 
-  // ── Stats Row (even spacing, no overlap) ──
+  // ── Stats Row (fixed slots, no overlap, aligned on one line) ──
   const statsY = 170;
   const stats = [
     { icon: "📦", value: String(props.repos), label: "Repos" },
@@ -177,21 +177,43 @@ async function exportCard(props: {
   ];
 
   const statsTotalW = W - LX * 2;
-  const statGap = 12;
-  const statW = (statsTotalW - statGap * (stats.length - 1)) / stats.length;
+  const statGap = 28;
+  const numStats = stats.length;
+  const statW = (statsTotalW - statGap * (numStats - 1)) / numStats;
+  const iconY = statsY;
+  const valueY = statsY + 22;
+  const labelY = statsY + 46;
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
   stats.forEach((s, i) => {
-    const cx = LX + i * (statW + statGap) + statW / 2;
-    ctx.font = "14px system-ui";
-    ctx.textAlign = "center";
-    ctx.fillText(s.icon, cx, statsY);
+    const slotLeft = LX + i * (statW + statGap);
+    const cx = slotLeft + statW / 2;
+    const maxValueW = statW - 8;
+
+    ctx.font = "14px system-ui, -apple-system, sans-serif";
     ctx.fillStyle = "#f8fafc";
+    ctx.fillText(s.icon, cx, iconY);
+
     ctx.font = "bold 20px system-ui, -apple-system, sans-serif";
-    ctx.fillText(s.value, cx, statsY + 22);
-    ctx.fillStyle = "#64748b";
-    ctx.font = "11px system-ui, -apple-system, sans-serif";
-    ctx.fillText(s.label, cx, statsY + 46);
+    const valueWidth = ctx.measureText(s.value).width;
+    const valueFontSize = valueWidth > maxValueW ? Math.max(12, Math.floor((20 * maxValueW) / valueWidth)) : 20;
+    if (valueFontSize !== 20) ctx.font = `bold ${valueFontSize}px system-ui, -apple-system, sans-serif`;
     ctx.fillStyle = "#f8fafc";
+    ctx.fillText(s.value, cx, valueY);
+
+    ctx.font = "11px system-ui, -apple-system, sans-serif";
+    let labelText = s.label;
+    const labelWidth = ctx.measureText(labelText).width;
+    if (labelWidth > maxValueW) {
+      while (labelText.length > 1 && ctx.measureText(labelText + "…").width > maxValueW) labelText = labelText.slice(0, -1);
+      labelText = labelText + "…";
+    }
+    ctx.fillStyle = "#64748b";
+    ctx.fillText(labelText, cx, labelY);
   });
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
 
   // ── Left column: Languages (stays within LEFT_COL_END, no overlap) ──
   const colY = 250;
@@ -244,6 +266,7 @@ async function exportCard(props: {
   ];
 
   const highlightRowH = 40;
+  const highlightValueX = RX + 180;
   highlights.forEach((h, i) => {
     const y = colY + 24 + i * highlightRowH;
     ctx.fillStyle = "#94a3b8";
@@ -252,7 +275,9 @@ async function exportCard(props: {
     ctx.fillText(h.label, RX, y);
     ctx.fillStyle = "#f8fafc";
     ctx.font = "bold 16px system-ui, -apple-system, sans-serif";
-    ctx.fillText(h.value, RX, y + 20);
+    ctx.textAlign = "right";
+    ctx.fillText(h.value, highlightValueX, y + 20);
+    ctx.textAlign = "left";
   });
 
   // ── Footer (clear gap above) ──
