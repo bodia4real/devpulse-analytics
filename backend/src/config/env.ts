@@ -14,7 +14,7 @@ export const config = {
         process.env.GITHUB_CALLBACK_URL ||
         'https://devpulse-backend-production.up.railway.app/api/auth/github/callback',
     },
-    frontendUrl: process.env.FRONTEND_URL!,
+    frontendUrl: process.env.FRONTEND_URL || '',
   };
   
   // Validate required env vars on startup

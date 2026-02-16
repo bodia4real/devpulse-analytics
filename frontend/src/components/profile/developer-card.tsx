@@ -74,9 +74,9 @@ async function loadImage(src: string): Promise<HTMLImageElement | null> {
 async function exportCard(props: {
   username: string;
   avatarUrl: string | null;
-  memberSince: string;
+  memberSince: string | null;
   repos: number;
-  stars: number;
+  issues: number;
   forks: number;
   contributions: number;
   currentStreak: number;
@@ -151,9 +151,11 @@ async function exportCard(props: {
   ctx.textBaseline = "top";
   ctx.fillText(`@${props.username}`, LX + avatarSize + 18, 56);
 
-  ctx.fillStyle = "#94a3b8";
-  ctx.font = "14px system-ui, -apple-system, sans-serif";
-  ctx.fillText(`Member since ${props.memberSince}`, LX + avatarSize + 18, 90);
+  if (props.memberSince) {
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "14px system-ui, -apple-system, sans-serif";
+    ctx.fillText(`Member since ${props.memberSince}`, LX + avatarSize + 18, 90);
+  }
 
   // ── Divider ──
   ctx.strokeStyle = "rgba(255,255,255,0.08)";
@@ -167,7 +169,7 @@ async function exportCard(props: {
   const statsY = 170;
   const stats = [
     { icon: "📦", value: String(props.repos), label: "Repos" },
-    { icon: "⭐", value: String(props.stars), label: "Stars" },
+    { icon: "📋", value: String(props.issues), label: "Issues" },
     { icon: "🍴", value: String(props.forks), label: "Forks" },
     { icon: "📊", value: props.contributions.toLocaleString(), label: "Contributions" },
     { icon: "🔥", value: `${props.currentStreak}d`, label: "Streak" },
@@ -282,12 +284,11 @@ export function DeveloperProfile({
 }: DeveloperProfileProps) {
   const [exporting, setExporting] = useState(false);
 
-  const totalStars = repos.reduce((sum, r) => sum + r.stars, 0);
   const totalForks = repos.reduce((sum, r) => sum + r.forks, 0);
-  const memberSince = new Date(user.created_at).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  const totalOpenIssues = repos.reduce((sum, r) => sum + r.open_issues, 0);
+  const memberSince = user.github_created_at
+    ? new Date(user.github_created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    : null;
   const maxLangCount = topLanguages[0]?.count ?? 1;
 
   const currentStreak = insights?.currentStreak ?? 0;
@@ -314,7 +315,7 @@ export function DeveloperProfile({
         avatarUrl: user.avatar_url,
         memberSince,
         repos: repos.length,
-        stars: totalStars,
+        issues: totalOpenIssues,
         forks: totalForks,
         contributions: totalContributions,
         currentStreak,
@@ -331,7 +332,7 @@ export function DeveloperProfile({
     } finally {
       setExporting(false);
     }
-  }, [user, repos, totalContributions, totalStars, totalForks, currentStreak, longestStreak, weeklyAvg, bestDay, velocityLabel, topLanguages, memberSince]);
+  }, [user, repos, totalContributions, totalOpenIssues, totalForks, currentStreak, longestStreak, weeklyAvg, bestDay, velocityLabel, topLanguages, memberSince]);
 
   return (
     <div className="space-y-6">
@@ -362,7 +363,7 @@ export function DeveloperProfile({
           )}
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-bold sm:text-3xl">@{user.username}</h1>
-            <p className="mt-1 text-sm text-slate-400">Member since {memberSince}</p>
+            {memberSince && <p className="mt-1 text-sm text-slate-400">Member since {memberSince}</p>}
           </div>
         </div>
 
@@ -370,7 +371,7 @@ export function DeveloperProfile({
         <div className="relative mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {[
             { icon: FolderGit2, value: repos.length, label: "Repos" },
-            { icon: Star, value: totalStars, label: "Stars" },
+            { icon: BarChart3, value: totalOpenIssues, label: "Issues" },
             { icon: GitFork, value: totalForks, label: "Forks" },
             { icon: GitCommitHorizontal, value: totalContributions.toLocaleString(), label: "Contributions" },
             { icon: Flame, value: `${currentStreak}d`, label: "Streak" },
@@ -501,7 +502,7 @@ export function DeveloperProfile({
                 )}
                 <div>
                   <h3 className="text-xl font-bold">@{user.username}</h3>
-                  <p className="text-xs text-slate-400">Member since {memberSince}</p>
+                  {memberSince && <p className="text-xs text-slate-400">Member since {memberSince}</p>}
                 </div>
               </div>
 
@@ -511,7 +512,7 @@ export function DeveloperProfile({
               <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
                 {[
                   { v: String(repos.length), l: "Repos" },
-                  { v: String(totalStars), l: "Stars" },
+                  { v: String(totalOpenIssues), l: "Issues" },
                   { v: String(totalForks), l: "Forks" },
                   { v: totalContributions.toLocaleString(), l: "Contributions" },
                   { v: `${currentStreak}d`, l: "Streak" },

@@ -48,7 +48,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
 
   const accessToken = tokenRes.data.access_token;
 
-  const userRes = await axios.get<{ id: number; login: string; email?: string | null; avatar_url?: string | null }>(
+  const userRes = await axios.get<{ id: number; login: string; email?: string | null; avatar_url?: string | null; created_at?: string }>(
     'https://api.github.com/user',
     { headers: { Authorization: `Bearer ${accessToken}` } }
   ).catch(() => null);
@@ -62,18 +62,20 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
   const username = gh.login ?? '';
   const email = gh.email ?? null;
   const avatarUrl = gh.avatar_url ?? null;
+  const githubCreatedAt = gh.created_at ?? null;
 
   const { rows } = await pool.query<{ id: string; github_id: string; username: string; email: string | null; avatar_url: string | null }>(
-    `INSERT INTO users (github_id, username, email, avatar_url, access_token, updated_at)
-     VALUES ($1, $2, $3, $4, $5, NOW())
+    `INSERT INTO users (github_id, username, email, avatar_url, access_token, github_created_at, updated_at)
+     VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW())
      ON CONFLICT (github_id) DO UPDATE SET
        username = EXCLUDED.username,
        email = EXCLUDED.email,
        avatar_url = EXCLUDED.avatar_url,
        access_token = EXCLUDED.access_token,
+       github_created_at = COALESCE(EXCLUDED.github_created_at, users.github_created_at),
        updated_at = NOW()
      RETURNING id, github_id, username, email, avatar_url`,
-    [githubId, username, email, avatarUrl, accessToken]
+    [githubId, username, email, avatarUrl, accessToken, githubCreatedAt]
   );
 
   const user = rows[0];
@@ -87,7 +89,8 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
     { expiresIn: config.jwtExpiresIn } as jwt.SignOptions
   );
 
-  res.redirect(`${config.frontendUrl}?token=${encodeURIComponent(token)}`);
+  const base = config.frontendUrl || 'http://localhost:3001';
+  res.redirect(`${base}/callback?token=${encodeURIComponent(token)}`);
 }
 
 /**
@@ -99,8 +102,16 @@ export async function getMe(req: Request, res: Response): Promise<void> {
     throw new UnauthorizedError();
   }
 
-  const { rows } = await pool.query<{ id: string; github_id: string; username: string; email: string | null; avatar_url: string | null; created_at: Date }>(
-    'SELECT id, github_id, username, email, avatar_url, created_at FROM users WHERE id = $1',
+  const { rows } = await pool.query<{
+    id: string;
+    github_id: string;
+    username: string;
+    email: string | null;
+    avatar_url: string | null;
+    created_at: Date;
+    github_created_at: Date | null;
+  }>(
+    'SELECT id, github_id, username, email, avatar_url, created_at, github_created_at FROM users WHERE id = $1',
     [authReq.user.userId]
   );
 
@@ -108,7 +119,18 @@ export async function getMe(req: Request, res: Response): Promise<void> {
     throw new UnauthorizedError();
   }
 
-  res.json({ user: rows[0] });
+  const u = rows[0];
+  res.json({
+    user: {
+      id: u.id,
+      github_id: u.github_id,
+      username: u.username,
+      email: u.email,
+      avatar_url: u.avatar_url,
+      created_at: u.created_at,
+      github_created_at: u.github_created_at,
+    },
+  });
 }
 
 /**
