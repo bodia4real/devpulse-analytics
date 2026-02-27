@@ -48,3 +48,5 @@ server.on('error', (err: NodeJS.ErrnoException) => {
   }
   process.exit(1);
 });
+
+export default server;
