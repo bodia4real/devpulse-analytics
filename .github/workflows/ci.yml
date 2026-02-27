@@ -24,4 +24,12 @@ jobs:
 
       - name: Run tests
         working-directory: ./backend
+        env:
+          DATABASE_URL: postgres://test:test@localhost:5432/test
+          JWT_SECRET: test-secret
+          JWT_EXPIRES_IN: 7d
+          GITHUB_CLIENT_ID: test-id
+          GITHUB_CLIENT_SECRET: test-secret
+          GITHUB_CALLBACK_URL: http://localhost:5001/api/auth/github/callback
+          FRONTEND_URL: http://localhost:3001
         run: npm test
