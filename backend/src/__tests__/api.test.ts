@@ -38,6 +38,15 @@ describe('API integration', () => {
     expect([301, 302]).toContain(res.statusCode);
     expect(res.headers.location).toContain('github.com/login/oauth/authorize');
   });
+  it('GET /api/repos without token returns 401', async () => {
+    const res = await request(server).get('/api/repos');
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('GET /api/contributions without token returns 401', async () => {
+    const res = await request(server).get('/api/contributions');
+    expect(res.statusCode).toBe(401);
+  });
 });
 
 // Close HTTP server after tests so Jest can exit cleanly
